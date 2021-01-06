@@ -35,8 +35,8 @@ contexts:
     - include: number
     - include: symbol
     - include: string
-    - include: array
-    - include: object
+    - include: list
+    - include: struct
   nulltype:
     - match: \bnull\.\b
       push:
@@ -143,7 +143,8 @@ contexts:
     - match: \\.
       scope: invalid.illegal.unrecognized-string-escape.ion
 
-  array:
+  list:
+    # an ION list (JSON array)
     - match: '\['
       scope: punctuation.section.sequence.begin.ion
       push:
@@ -174,8 +175,8 @@ contexts:
         - match: '[^\s\]]'
           scope: invalid.illegal.expected-sequence-element.ion
 
-  object:
-    # a JSON object
+  struct:
+    # an ION struct (JSON object)
     - match: '\{'
       scope: punctuation.section.mapping.begin.ion
       push:
