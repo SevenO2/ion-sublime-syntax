@@ -35,6 +35,7 @@ contexts:
     - include: number
     - include: symbol
     - include: string
+    - include: long-string
     - include: list
     - include: struct
   nulltype:
@@ -91,7 +92,7 @@ contexts:
     - match: \$[0-9]+\b
       scope: constant.other.placeholder.symbol-id.ion
   symbol-quoted:
-    - match: "'"
+    - match: \'(?!\'\')
       scope: punctuation.definition.string.begin.ion
       push: inside-symbol
   inside-symbol:
@@ -119,6 +120,25 @@ contexts:
     - match: $\n?
       scope: invalid.illegal.unclosed-string.ion
       pop: true
+
+  long-string:
+    - match: "'''"
+      scope: punctuation.definition.string.begin.ion
+      push: inside-long-string
+  inside-long-string:
+    - meta_scope: string.quoted.triple.ion
+    - meta_include_prototype: false
+    - match: "'''"
+      scope: punctuation.definition.string.end.ion
+      set: concat-long-string
+    - include: string-escape
+  concat-long-string:
+    - match: "'''"
+      scope: punctuation.definition.string.begin.ion
+      set: inside-long-string
+    - match: (?=\S)
+      pop: true
+
 
   string-escape:
     - match: |-
