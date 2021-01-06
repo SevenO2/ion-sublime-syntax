@@ -30,15 +30,31 @@ contexts:
   main:
     - include: value
   value:
-    - include: constant
+    - include: nulltype
+    - include: bool
     - include: number
     - include: symbol
     - include: string
     - include: array
     - include: object
-  constant:
-    - match: \b(?:true|false|null)\b
-      scope: constant.language.ion
+  nulltype:
+    - match: \bnull\.\b
+      push:
+        - meta_scope: constant.language.typed-null.ion
+        - match: (?:null|bool|int|float|decimal|timestamp|string|symbol|blob|clob|struct|list|sexp)\b
+          scope: constant.language.type.ion
+          pop: true
+        - match: '[a-zA-Z]+\b'
+          scope: invalid.illegal.unrecognized-type
+          pop: true
+        - match: '[^a-zA-Z]+\b'
+          scope: invalid.illegal.expected-type
+          pop: true
+    - match: \bnull\b
+      scope: constant.language.null.ion
+  bool:
+    - match: \b(?:true|false)\b
+      scope: constant.language.bool.ion
   number:
     # handles integer and decimal numbers
     - match: |-
