@@ -100,11 +100,28 @@ contexts:
         - match: '\]'
           scope: punctuation.section.sequence.end.ion
           pop: true
-        - include: value
-        - match: ","
-          scope: punctuation.separator.sequence.ion
+        - match: ''
+          push:
+            - match: '(,)|(?=\])'
+              captures:
+                1: invalid.illegal.expected-sequence-element.ion
+              pop: true
+            - match: (?=\S)
+              set:
+                - clear_scopes: 1
+                - meta_scope: meta.sequence.value.ion
+                - include: value
+                - match: ''
+                  set:
+                    - match: '(,)|(?=\s*\])'
+                      captures:
+                        1: punctuation.separator.sequence.ion
+                      pop: true
+                    - match: '\s(?=[^\s,])|[^\s,]'
+                      scope: invalid.illegal.expected-sequence-separator.ion
+                      pop: true
         - match: '[^\s\]]'
-          scope: invalid.illegal.expected-sequence-separator.ion
+          scope: invalid.illegal.expected-sequence-element.ion
 
   object:
     # a JSON object
@@ -115,13 +132,14 @@ contexts:
         - match: '\}'
           scope: punctuation.section.mapping.end.ion
           pop: true
-        - match: '"'
-          scope: punctuation.definition.string.begin.ion
+        - match: (?=")
           push:
             - clear_scopes: 1
-            - meta_scope: meta.mapping.key.ion string.quoted.double.ion
+            - meta_scope: meta.mapping.key.ion
             - meta_include_prototype: false
-            - include: inside-string
+            - include: string
+            - match: ''
+              pop: true
         - match: ":"
           scope: punctuation.separator.mapping.key-value.ion
           push:
