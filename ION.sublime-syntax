@@ -72,23 +72,28 @@ contexts:
         )
       scope: constant.numeric.timestamp.ion
   number:
-    # handles integer and decimal numbers
+    # handles special integers
+    - match: -?0b[0-1](?:[0-1_]*[0-1])?(?=[\}\]\),"'\s])
+      scope: constant.numeric.integer.binary.ion
+    - match: -?0x[\da-fA-F](?:[\da-fA-F_]*[\da-fA-F])?(?=[\}\]\),"'\s])
+      scope: constant.numeric.integer.hexadecimal.ion
+    # handles real numbers and normal integers
     - match: |-
-        (?x:         # turn on extended mode
-          -?         # an optional minus
+        (?x:        # turn on extended mode
+          -?            # an optional minus
           (?:
-            0        # a zero
-            |        # ...or...
-            [1-9]    # a 1-9 character
-            \d*      # followed by zero or more digits
+            0               # a zero
+            |               # ...or...
+            [1-9]           # a 1-9 character
+            (?: [\d_]*\d)?  # followed by zero or more digits
           )
           (?:
             (?:
-              \.     # a period
-              \d+    # followed by one or more digits
+              \.              # a period
+              (?: [\d_]*\d)?  # followed by one or more digits
             )?
             (?:
-              [eE]   # an e character
+              [eEdD]   # an e character
               [+-]?  # followed by an option +/-
               \d+    # followed by one or more digits
             )?       # make exponent optional
