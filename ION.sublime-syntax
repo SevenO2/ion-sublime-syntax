@@ -36,6 +36,7 @@ contexts:
     - include: symbol
     - include: string
     - include: long-string
+    - include: blob
     - include: list
     - include: struct
   nulltype:
@@ -139,6 +140,37 @@ contexts:
     - match: (?=\S)
       pop: true
 
+  blob:
+    - match: "{{"
+      scope: punctuation.section.braces.begin.ion
+      push: inside-blob
+  inside-blob:
+    - meta_scope: meta.braces.ion
+    - meta_include_prototype: false
+    - match: "}}"
+      scope: punctuation.section.braces.begin.ion
+      pop: true
+    - match: (?=")
+      push:
+        - meta_include_prototype: false
+        - include: string
+        - match: \s*(?=\})
+          pop: true
+        - match: '[^\s\}]'
+          scope: invalid.illegal.unclosed-blob.ion
+    - match: (?=''')
+      push:
+        - meta_include_prototype: false
+        - include: long-string
+        - match: \s*(?=\})
+          pop: true
+        - match: '[^\s\}]'
+          scope: invalid.illegal.unclosed-blob.ion
+    - match: '[\w/+]+=*(?=\s*\})'
+      scope: markup.raw.inline.ion
+    - match: '[^\s\}]'
+      scope: invalid.illegal.expected-blob-data.ion
+
 
   string-escape:
     - match: |-
@@ -197,7 +229,7 @@ contexts:
 
   struct:
     # an ION struct (JSON object)
-    - match: '\{'
+    - match: '\{(?!\{)'
       scope: punctuation.section.mapping.begin.ion
       push:
         - meta_scope: meta.mapping.ion
