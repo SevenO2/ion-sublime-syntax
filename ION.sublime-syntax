@@ -32,6 +32,7 @@ contexts:
   value:
     - include: nulltype
     - include: bool
+    - include: timestamp
     - include: number
     - include: symbol
     - include: string
@@ -57,6 +58,19 @@ contexts:
   bool:
     - match: \b(?:true|false)\b
       scope: constant.language.bool.ion
+  timestamp:
+    - match: |-
+        (?x:
+          (?:
+            (?: \d{4}(T|-\d{2}(T|-\d{2}T?)))   # just a date with optional bits
+            |                                  # ...or...
+            (?: \d{4}-\d{2}-\d{2}              # full date
+                T(\d{2}:\d{2})(:\d{2}(.\d+)?)? # time with optional seconds and fractional seconds
+                (?: Z|[+-]\d{2}:\d{2})         # timezone
+            )
+          )(?=[\}\]\),"'\s]) # lookahead for numeric stop-character
+        )
+      scope: constant.numeric.timestamp.ion
   number:
     # handles integer and decimal numbers
     - match: |-
@@ -79,6 +93,7 @@ contexts:
               \d+    # followed by one or more digits
             )?       # make exponent optional
           )?         # make decimal portion optional
+          (?=[\}\]\),"'\s]) # lookahead for numeric stop-character
         )
       scope: constant.numeric.ion
 
