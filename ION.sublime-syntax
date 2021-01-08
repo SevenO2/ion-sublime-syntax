@@ -108,17 +108,17 @@ contexts:
     - include: symbol-quoted
   identifier:
     - match: \b[A-Za-z_][A-Za-z_$0-9]*\b
-      scope: variable.other.constant.symbol-identifier.ion
+      scope: entity.name.symbol-identifier.ion
     - match: \$[A-Za-z_][A-Za-z_$0-9]*\b
       scope: keyword.other.symbol-reserved.ion
     - match: \$[0-9]+\b
-      scope: constant.other.placeholder.symbol-id.ion
+      scope: keyword.other.symbol-id.ion
   symbol-quoted:
     - match: \'(?!\'\')
       scope: punctuation.definition.string.begin.ion
       push: inside-symbol
   inside-symbol:
-    - meta_scope: variable.other.constant.symbol-quoted.ion
+    - meta_scope: entity.name.symbol-quoted.ion
     - meta_include_prototype: false
     - match: "'"
       scope: punctuation.definition.string.end.ion
@@ -155,10 +155,11 @@ contexts:
       set: concat-long-string
     - include: string-escape
   concat-long-string:
+    - meta_scope: string.unquoted.triple.ion
     - match: "'''"
       scope: punctuation.definition.string.begin.ion
       set: inside-long-string
-    - match: (?=\S)
+    - match: (?=\s*[^\s/'])
       pop: true
 
   blob:
@@ -173,22 +174,24 @@ contexts:
       pop: true
     - match: (?=")
       push:
+        - meta_scope: markup.raw.block.clob.ion
         - meta_include_prototype: false
         - include: string
-        - match: \s*(?=\})
+        - match: (?=\s*\}\})
           pop: true
         - match: '[^\s\}]'
           scope: invalid.illegal.unclosed-blob.ion
     - match: (?=''')
       push:
+        - meta_scope: markup.raw.block.clob.ion
         - meta_include_prototype: false
         - include: long-string
-        - match: \s*(?=\})
+        - match: (?=\s*\}\})
           pop: true
         - match: '[^\s\}]'
           scope: invalid.illegal.unclosed-blob.ion
     - match: '[\w/+]+=*(?=\s*\})'
-      scope: markup.raw.inline.ion
+      scope: markup.raw.inline.blob.ion
     - match: '[^\s\}]'
       scope: invalid.illegal.expected-blob-data.ion
 
@@ -227,7 +230,7 @@ contexts:
           pop: true
         - include: value
         - match: '[!#%&*+\-./;<=>?@^`|~]'
-          scope: keyword.operator.ion
+          scope: storage.type.operator.ion
         - match: '[^\s\)]'
           scope: invalid.illegal.expected-parens-element.ion
 
