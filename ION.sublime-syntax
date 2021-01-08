@@ -38,6 +38,7 @@ contexts:
     - include: string
     - include: long-string
     - include: blob
+    - include: s-exp
     - include: list
     - include: struct
   nulltype:
@@ -215,6 +216,21 @@ contexts:
     - match: \\.
       scope: invalid.illegal.unrecognized-string-escape.ion
 
+  s-exp:
+    # an ION S-Expression
+    - match: '\('
+      scope: punctuation.section.parens.begin.ion
+      push:
+        - meta_scope: meta.parens.ion
+        - match: '\)'
+          scope: punctuation.section.parens.end.ion
+          pop: true
+        - include: value
+        - match: '[!#%&*+\-./;<=>?@^`|~]'
+          scope: keyword.operator.ion
+        - match: '[^\s\)]'
+          scope: invalid.illegal.expected-parens-element.ion
+
   list:
     # an ION list (JSON array)
     - match: '\['
@@ -233,7 +249,7 @@ contexts:
             - match: (?=\S)
               set:
                 - clear_scopes: 1
-                - meta_scope: meta.sequence.value.ion
+                - meta_scope: meta.sequence.element.ion
                 - include: value
                 - match: ''
                   set:
