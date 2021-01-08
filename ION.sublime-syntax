@@ -37,8 +37,8 @@ contexts:
     - include: symbol
     - include: string
     - include: long-string
-    - include: blob
     - include: s-exp
+    - include: blob
     - include: list
     - include: struct
   nulltype:
@@ -162,40 +162,6 @@ contexts:
     - match: (?=\s*[^\s/'])
       pop: true
 
-  blob:
-    - match: "{{"
-      scope: punctuation.section.braces.begin.ion
-      push: inside-blob
-  inside-blob:
-    - meta_scope: meta.braces.ion
-    - meta_include_prototype: false
-    - match: "}}"
-      scope: punctuation.section.braces.begin.ion
-      pop: true
-    - match: (?=")
-      push:
-        - meta_scope: markup.raw.block.clob.ion
-        - meta_include_prototype: false
-        - include: string
-        - match: (?=\s*\}\})
-          pop: true
-        - match: '[^\s\}]'
-          scope: invalid.illegal.unclosed-blob.ion
-    - match: (?=''')
-      push:
-        - meta_scope: markup.raw.block.clob.ion
-        - meta_include_prototype: false
-        - include: long-string
-        - match: (?=\s*\}\})
-          pop: true
-        - match: '[^\s\}]'
-          scope: invalid.illegal.unclosed-blob.ion
-    - match: '[\w/+]+=*(?=\s*\})'
-      scope: markup.raw.inline.blob.ion
-    - match: '[^\s\}]'
-      scope: invalid.illegal.expected-blob-data.ion
-
-
   string-escape:
     - match: |-
         (?x:                  # turn on extended mode
@@ -233,6 +199,39 @@ contexts:
           scope: storage.type.operator.ion
         - match: '[^\s\)]'
           scope: invalid.illegal.expected-parens-element.ion
+
+  blob:
+    - match: "{{"
+      scope: punctuation.section.braces.begin.ion
+      push: inside-blob
+  inside-blob:
+    - meta_scope: meta.braces.ion
+    - meta_include_prototype: false
+    - match: "}}"
+      scope: punctuation.section.braces.begin.ion
+      pop: true
+    - match: (?=")
+      push:
+        - meta_scope: markup.raw.block.clob.ion
+        - meta_include_prototype: false
+        - include: string
+        - match: (?=\s*\}\})
+          pop: true
+        - match: '[^\s\}]'
+          scope: invalid.illegal.unclosed-blob.ion
+    - match: (?=''')
+      push:
+        - meta_scope: markup.raw.block.clob.ion
+        - meta_include_prototype: false
+        - include: long-string
+        - match: (?=\s*\}\})
+          pop: true
+        - match: '[^\s\}]'
+          scope: invalid.illegal.unclosed-blob.ion
+    - match: '[\w/+]+=*(?=\s*\})'
+      scope: markup.raw.inline.blob.ion
+    - match: '[^\s\}]'
+      scope: invalid.illegal.expected-blob-data.ion
 
   list:
     # an ION list (JSON array)
