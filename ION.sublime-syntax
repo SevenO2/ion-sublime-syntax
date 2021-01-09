@@ -34,6 +34,7 @@ contexts:
     - include: bool
     - include: timestamp
     - include: number
+    - include: annotation
     - include: symbol
     - include: string
     - include: long-string
@@ -103,16 +104,28 @@ contexts:
         )
       scope: constant.numeric.ion
 
+  annotation:
+    - match: ([A-Za-z_][A-Za-z_$0-9]*)\s*(::)\s*
+      captures:
+        1: storage.type.annotation.ion
+        2: punctuation.definition.annotation.ion
+    - match: ('[^']*')\s*(::)\s*
+      captures:
+        1: storage.type.annotation.ion
+        2: punctuation.definition.annotation.ion
+    - match: (\$[A-Za-z_$0-9]*)\s*(::)\s*
+      captures:
+        1: keyword.other.symbol-reserved.ion
+        2: punctuation.definition.annotation.ion
+
   symbol:
     - include: identifier
     - include: symbol-quoted
   identifier:
     - match: \b[A-Za-z_][A-Za-z_$0-9]*\b
       scope: entity.name.symbol-identifier.ion
-    - match: \$[A-Za-z_][A-Za-z_$0-9]*\b
+    - match: \$[A-Za-z_$0-9]*\b
       scope: keyword.other.symbol-reserved.ion
-    - match: \$[0-9]+\b
-      scope: keyword.other.symbol-id.ion
   symbol-quoted:
     - match: \'(?!\'\')
       scope: punctuation.definition.string.begin.ion
