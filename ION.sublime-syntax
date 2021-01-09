@@ -32,6 +32,28 @@ contexts:
       scope: comment.line.double-slash.js
       captures:
         1: punctuation.definition.comment.ion
+  string-escape:
+    - match: |-
+        (?x:                  # turn on extended mode
+          \\                  # a literal backslash
+          (?:                 # ...followed by...
+            ['"\\/?0abtnfrv]  # one of these characters
+            |                 # ...or...
+            NL                # NL
+            |                 # ...or...
+            x                 # an x
+            [0-9a-fA-F]{2}    # and two hex digits
+            |                 # ...or...
+            u                 # a u
+            [0-9a-fA-F]{4}    # and four hex digits
+            |                 # ...or...
+            U                 # a U
+            [0-9a-fA-F]{8}    # and eight hex digits
+          )
+        )
+      scope: constant.character.escape.ion
+    - match: \\.
+      scope: invalid.illegal.unrecognized-string-escape.ion
 
   main:
     - include: value
@@ -176,29 +198,6 @@ contexts:
       set: inside-long-string
     - match: (?=\s*[^\s/'])
       pop: true
-
-  string-escape:
-    - match: |-
-        (?x:                  # turn on extended mode
-          \\                  # a literal backslash
-          (?:                 # ...followed by...
-            ['"\\/?0abtnfrv]  # one of these characters
-            |                 # ...or...
-            NL                # NL
-            |                 # ...or...
-            x                 # an x
-            [0-9a-fA-F]{2}    # and two hex digits
-            |                 # ...or...
-            u                 # a u
-            [0-9a-fA-F]{4}    # and four hex digits
-            |                 # ...or...
-            U                 # a U
-            [0-9a-fA-F]{8}    # and four hex digits
-          )
-        )
-      scope: constant.character.escape.ion
-    - match: \\.
-      scope: invalid.illegal.unrecognized-string-escape.ion
 
   s-exp:
     # an ION S-Expression
