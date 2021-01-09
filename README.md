@@ -1,12 +1,12 @@
-# ION-Syntax
-Syntax highlighting for [ION](http://en.wikipedia.org/wiki/ION_(serialization_format)) playlist files in [Sublime Text](http://www.sublimetext.com/).
+# ION Syntax
+Syntax highlighting for [ION](http://en.wikipedia.org/wiki/ION_(serialization_format)) serialization files in [Sublime Text](http://www.sublimetext.com/).
 
 ![Screenshot](https://raw.githubusercontent.com/SevenO2/misc/master/ion_syntax.PNG)
 
 ## Installation
 
 ### Package Control
-Installation through [package control](http://wbond.net/sublime_packages/package_control) is recommended. It will handle updating your packages as they become available. To install, do the following.
+Installation through [package control](https://packagecontrol.io/) is recommended. It will handle updating your packages as they become available. To install, do the following.
 
 * In the Command Palette, enter `Package Control: Install Package`
 * Search for `ION Syntax`
