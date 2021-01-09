@@ -4,6 +4,12 @@ name: ION
 file_extensions:
   - ion
 scope: source.ion
+
+variables:
+  symbol_ident: (\b[A-Za-z_][A-Za-z_$0-9]*)
+  symbol_reserved: (\$[A-Za-z_$0-9]*)
+  symbol_quoted: ('[^']*')
+
 contexts:
   prototype:
     - include: comments
@@ -105,35 +111,31 @@ contexts:
       scope: constant.numeric.ion
 
   annotation:
-    - match: ([A-Za-z_][A-Za-z_$0-9]*)\s*(::)\s*
+    - match: '{{symbol_ident}}\s*(::)\s*'
       captures:
         1: storage.type.annotation.ion
         2: punctuation.definition.annotation.ion
-    - match: ('[^']*')\s*(::)\s*
-      captures:
-        1: storage.type.annotation.ion
-        2: punctuation.definition.annotation.ion
-    - match: (\$[A-Za-z_$0-9]*)\s*(::)\s*
+    - match: '{{symbol_reserved}}\s*(::)\s*'
       captures:
         1: keyword.other.symbol-reserved.ion
         2: punctuation.definition.annotation.ion
+    - match: '{{symbol_quoted}}\s*(::)\s*'
+      captures:
+        1: storage.type.annotation.ion
+        2: punctuation.definition.annotation.ion
 
   symbol:
-    - include: identifier
-    - include: symbol-quoted
-  identifier:
-    - match: \b[A-Za-z_][A-Za-z_$0-9]*\b
+    - match: '{{symbol_ident}}'
       scope: entity.name.symbol-identifier.ion
-    - match: \$[A-Za-z_$0-9]*\b
+    - match: '{{symbol_reserved}}'
       scope: keyword.other.symbol-reserved.ion
-  symbol-quoted:
     - match: \'(?!\'\')
       scope: punctuation.definition.string.begin.ion
       push: inside-symbol
   inside-symbol:
     - meta_scope: entity.name.symbol-quoted.ion
     - meta_include_prototype: false
-    - match: "'"
+    - match: \'
       scope: punctuation.definition.string.end.ion
       pop: true
     - include: string-escape
@@ -287,22 +289,14 @@ contexts:
         - match: '\}'
           scope: punctuation.section.mapping.end.ion
           pop: true
-        - match: (?=")
-          push:
-            - clear_scopes: 1
-            - meta_scope: meta.mapping.key.ion
-            - meta_include_prototype: false
-            - include: string
-            - match: ''
-              pop: true
-        - match: (?=['A-Za-z_$])
-          push:
-            - clear_scopes: 1
-            - meta_scope: meta.mapping.key.ion
-            - meta_include_prototype: false
-            - include: symbol
-            - match: ''
-              pop: true
+        - match: '{{symbol_ident}}(?=\s*:)'
+          scope: variable.other.constant.symbol-identifier.ion
+        - match: '{{symbol_reserved}}(?=\s*:)'
+          scope: keyword.other.symbol-reserved.ion
+        - match: '{{symbol_quoted}}(?=\s*:)'
+          scope: variable.other.constant.symbol-quoted.ion
+        - match: ("[^"]*")(?=\s*:)
+          scope: variable.other.constant.legacy-string.ion
         - match: ":"
           scope: punctuation.separator.mapping.key-value.ion
           push:
