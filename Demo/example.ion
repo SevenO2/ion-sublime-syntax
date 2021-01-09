@@ -1,20 +1,20 @@
-// Outer comment
-
+// Example ION file
 {
-	name: "John Doe",
-	weight: kg::90.7,
-	birthday: 1982-04-15,
+	name: "Jeff Jeffrey Jefferson",
+	weight: 'kilo-grams'::90.7,
+	birthday: 1982-04-15T,
 	alive: true,
-
-	poem: '''Rose are red,\
-Violets are blue.'''
+	poem: '''Roses Ⓡ red.\
+ Violets 🅁 blue. '''
 		/* I didn't say it was good. */
-		'''So put down that shoe!''',
+		'''Please put down that shoe!''',
 
-	list: ["unicode:\uABCD", -1_000, flags::0xBeeF],
-	struct: { thing1: foo::bar, 'thing2': null.bool },
+	list: ["unicode:\uABCD", -10_000, my::flags::0xBeeF],
+	struct: cat::{ thing_1: foo::bar, 'thing-2': null.bool },
 
 	s_expression: (a += b^(c/2)),
-	blob: png::{{ a5U1+4/306Ua2D5Ub== }}, // not really
-	clob: {{ '''nothing to see here''' }},
+	blob: png::{{ a5U1+4/306Ua2D5Ub== }}, // Base64
+	clob: {{ '''My text!\nDon't touch!''' }}, // ASCII
+
+	"legacy key": "value",
 }

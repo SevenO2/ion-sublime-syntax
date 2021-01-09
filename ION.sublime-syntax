@@ -204,7 +204,19 @@ contexts:
     - match: "'''"
       scope: punctuation.definition.string.end.ion
       set: concat-long-string
-    - include: string-escape
+    - match: ''
+      push:
+        - meta_scope: markup.raw.block.multiline-string.ion
+        - meta_include_prototype: false
+        - match: (?=\'\'\')
+          pop: true
+        - match: (\\\n) # escaped linebreak
+          scope: constant.character.escape.ion
+          push:
+            - clear_scopes: 1
+            - match: ''
+              pop: true
+        - include: string-escape
   concat-long-string:
     - meta_scope: string.unquoted.triple.ion
     - match: "'''"
@@ -253,7 +265,6 @@ contexts:
           set: close-blob
     - match: (?=''')
       set:
-        - meta_scope: markup.raw.block.clob.ion
         - meta_include_prototype: false
         - include: long-string
         - match: ''
