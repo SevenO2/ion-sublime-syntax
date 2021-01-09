@@ -16,5 +16,5 @@ Violets are blue.'''
 
 	s_expression: (a += b^(c/2)),
 	blob: png::{{ a5U1+4/306Ua2D5Ub== }}, // not really
-	clob: {{ "nothing to see here" }},
+	clob: {{ '''nothing to see here''' }},
 }

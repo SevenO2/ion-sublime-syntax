@@ -155,7 +155,7 @@
 
 	// A valid blob value with zero padding characters.
 	{{
-	  +AB/
+		+AB/
 	}},
 
 	// A valid blob value with one required padding character.
@@ -173,6 +173,8 @@
 	// ERROR: Invalid character within the data.
 	{{ dHdvIHBhZGRpbmc_gY2hhcmFjdGVycw= }},
 
+	{{ }}, // ERROR: Empty blob
+
 /*
  * Clobs
  */
@@ -182,13 +184,13 @@
 
 	shift_jis ::
 	{{
-	  '''Another clob with user-defined encoding, '''
-	  '''this time on multiple lines.'''
+		'''Another clob with user-defined encoding, '''
+		'''this time on multiple lines.'''
 	}},
 
 	{{
-	  // ERROR
-	  "comments not allowed"
+		// ERROR
+		"comments not allowed"
 	}},
 
 /*

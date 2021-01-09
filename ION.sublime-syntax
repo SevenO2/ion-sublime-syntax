@@ -233,41 +233,44 @@ contexts:
       scope: punctuation.section.braces.begin.ion
       push: inside-blob
   inside-blob:
-    - meta_scope: meta.braces.ion
     - meta_include_prototype: false
-    - match: "}}"
-      scope: punctuation.section.braces.begin.ion
-      pop: true
     - match: (?=[0-9a-zA-Z/+]) # Base64
-      push:
+      set:
+        - meta_scope: markup.raw.inline.blob.ion
         - meta_include_prototype: false
-        - match: '[0-9a-zA-Z/+]+=*(?=[\s\}])' # Allow '=' as padding only at the end
-          scope: markup.raw.inline.blob.ion
+        - match: '[0-9a-zA-Z/+]+=*' # Allow '=' as padding only at the end
+          scope: constant.numeric.base64.ion
+          set: close-blob
+        - match: ''
+          scope: invalid.illegal.unexpected_state.ion
           pop: true
-        - match: (?=\s*\}\})
-          pop: true
-        - match: '[^\s\}]'
-          scope: invalid.illegal.unclosed-blob.ion
     - match: (?=")
-      push:
+      set:
         - meta_scope: markup.raw.block.clob.ion
         - meta_include_prototype: false
         - include: string
-        - match: (?=\s*\}\})
-          pop: true
-        - match: '[^\s\}]'
-          scope: invalid.illegal.unclosed-blob.ion
+        - match: ''
+          set: close-blob
     - match: (?=''')
-      push:
+      set:
         - meta_scope: markup.raw.block.clob.ion
         - meta_include_prototype: false
         - include: long-string
-        - match: (?=\s*\}\})
-          pop: true
-        - match: '[^\s\}]'
-          scope: invalid.illegal.unclosed-blob.ion
-    - match: '[^\s\}]'
+        - match: ''
+          set: close-blob
+    - match: (\s*)(\}\})
+      captures:
+        1: invalid.illegal.expected-blob-data.ion
+        2: punctuation.section.braces.end.ion
+      pop: true
+    - match: \S
       scope: invalid.illegal.expected-blob-data.ion
+  close-blob:
+    - match: "}}"
+      scope: punctuation.section.braces.end.ion
+      pop: true
+    - match: \S
+      scope: invalid.illegal.expected-close-braces.ion
 
   list:
     # an ION list (JSON array)
