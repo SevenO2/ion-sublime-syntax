@@ -1,7 +1,7 @@
 # ION-Syntax
 Syntax highlighting for [ION](http://en.wikipedia.org/wiki/ION_(serialization_format)) playlist files in [Sublime Text](http://www.sublimetext.com/).
 
-<img src=https://raw.githubusercontent.com/SevenO2/misc/master/ion_syntax.PNG/>
+![Screenshot](https://raw.githubusercontent.com/SevenO2/misc/master/ion_syntax.PNG)
 
 ## Installation
 
