@@ -58,6 +58,8 @@ contexts:
 
   main:
     - include: value
+    - match: \S
+      scope: invalid.illegal.unrecognized-value.ion
   value:
     - include: nulltype
     - include: bool
