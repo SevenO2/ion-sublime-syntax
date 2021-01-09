@@ -9,6 +9,7 @@ variables:
   symbol_ident: (\b[A-Za-z_][A-Za-z_$0-9]*)
   symbol_reserved: (\$[A-Za-z_$0-9]*)
   symbol_quoted: ('[^']*')
+  non_value: '\]\}\),:/'
 
 contexts:
   prototype:
@@ -137,14 +138,27 @@ contexts:
       captures:
         1: storage.type.annotation.ion
         2: punctuation.definition.annotation.ion
+      push: annotated-value
     - match: '{{symbol_reserved}}\s*(::)\s*'
       captures:
         1: keyword.other.symbol-reserved.ion
         2: punctuation.definition.annotation.ion
+      push: annotated-value
     - match: '{{symbol_quoted}}\s*(::)\s*'
       captures:
         1: storage.type.annotation.ion
         2: punctuation.definition.annotation.ion
+      push: annotated-value
+  annotated-value:
+    - meta_scope: meta.annotation.value.ion
+    - match: \s*(?=[^{{non_value}}])
+      set:
+      - include: value
+      - match: ''
+        pop: true
+    - match: \s*([{{non_value}}])
+      scope: invalid.illegal.expected-annotated-value.ion
+      pop: true
 
   symbol:
     - match: '{{symbol_ident}}'
@@ -224,6 +238,16 @@ contexts:
     - match: "}}"
       scope: punctuation.section.braces.begin.ion
       pop: true
+    - match: (?=[0-9a-zA-Z/+]) # Base64
+      push:
+        - meta_include_prototype: false
+        - match: '[0-9a-zA-Z/+]+=*(?=[\s\}])' # Allow '=' as padding only at the end
+          scope: markup.raw.inline.blob.ion
+          pop: true
+        - match: (?=\s*\}\})
+          pop: true
+        - match: '[^\s\}]'
+          scope: invalid.illegal.unclosed-blob.ion
     - match: (?=")
       push:
         - meta_scope: markup.raw.block.clob.ion
@@ -242,8 +266,6 @@ contexts:
           pop: true
         - match: '[^\s\}]'
           scope: invalid.illegal.unclosed-blob.ion
-    - match: '[\w/+]+=*(?=\s*\})'
-      scope: markup.raw.inline.blob.ion
     - match: '[^\s\}]'
       scope: invalid.illegal.expected-blob-data.ion
 

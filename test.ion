@@ -119,7 +119,10 @@
  */
 	( '''hello '''     // Sexp with one element
 	  '''world!'''  ),
-	("hello world!"),   // The exact same sexp value
+	("hello world!"),  // The exact same sexp value
+
+	'''\uABCD'''       // Contains unicode character
+	'''\&''',          // ERROR: Contains invalid escape sequence
 
 	// This Ion value is a string containing three newlines. The serialized
 	// form's first newline is escaped into nothingness.
@@ -194,15 +197,15 @@
 	null.struct,                         // A null struct value
 	{ },                                 // An empty struct value
 	{ first : "Tom" , last: "Riddle" },  // Structure with two fields
-	{"first":"Tom","last":"Riddle"},     // The same value with confusing style
+	{"first":"Tom","last":"Riddle"},     // The same value with legacy style
 	{center:{x:1.0, y:12.5}, radius:3},  // Nested struct
-	{ x:1, },                            // Trailing comma is legal in Ion (unlike JSON)
+	{ 'x':1, },                          // Trailing comma is legal in Ion (unlike JSON)
 	{ "":42 },                           // A struct value containing a field with an empty name
 	{ x:1, x:null.int },                 // WARNING: repeated name 'x' leads to undefined behavior
 	{ x:1, , },                          // ERROR: missing field between commas
 
-	{ annotation:: field_name: value },     // ERROR
-	{ field_name: annotation:: value },     // Okay
+	{ annotation:: field_name: value },     // ERROR: field names are not values and cannot be annotated.
+	{ field_name: annotation:: value },     // Okay. Field values are normal values.
 
 /*
  * Lists
@@ -238,4 +241,5 @@
 	bool :: null.int,                         // A very misleading annotation on the integer null
 	'' :: 1,                                  // An empty annotation
 	null.symbol :: 1,                         // ERROR: type annotation cannot be null
+	nothingness::,                            // ERROR: annoatation must have a value to annotate
 ]
