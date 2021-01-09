@@ -248,7 +248,7 @@ contexts:
     - meta_include_prototype: false
     - match: (?=[0-9a-zA-Z/+]) # Base64
       set:
-        - meta_scope: markup.raw.inline.blob.ion
+        - meta_scope: markup.raw.inline.base64.ion
         - meta_include_prototype: false
         - match: '[0-9a-zA-Z/+]+=*' # Allow '=' as padding only at the end
           scope: constant.numeric.base64.ion
@@ -258,7 +258,6 @@ contexts:
           pop: true
     - match: (?=")
       set:
-        - meta_scope: markup.raw.block.clob.ion
         - meta_include_prototype: false
         - include: string
         - match: ''
