@@ -1,0 +1,20 @@
+// Outer comment
+
+{
+	name: "John Doe",
+	weight: kg::90.7,
+	birthday: 1982-04-15,
+	alive: true,
+
+	poem: '''Rose are red,\
+Violets are blue.'''
+		/* I didn't say it was good. */
+		'''So put down that shoe!''',
+
+	list: ["unicode:\uABCD", -1_000, flags::0xBeeF],
+	struct: { thing1: foo::bar, 'thing2': null.bool },
+
+	s_expression: (a += b^(c/2)),
+	blob: png::{{ a5U1+4/306Ua2D5Ub== }}, // not really
+	clob: {{ "nothing to see here" }},
+}
