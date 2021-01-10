@@ -205,6 +205,8 @@
 	{ "":42 },                           // A struct value containing a field with an empty name
 	{ x:1, x:null.int },                 // WARNING: repeated name 'x' leads to undefined behavior
 	{ x:1, , },                          // ERROR: missing field between commas
+	{ : "test", },                       // ERROR: missing field name
+	{ test: },                           // ERROR: missing field value
 
 	{ annotation:: field_name: value },     // ERROR: field names are not values and cannot be annotated.
 	{ field_name: annotation:: value },     // Okay. Field values are normal values.

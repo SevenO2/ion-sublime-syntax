@@ -6,9 +6,9 @@ file_extensions:
 scope: source.ion
 
 variables:
-  symbol_ident: (\b[A-Za-z_][A-Za-z_$0-9]*)
-  symbol_reserved: (\$[A-Za-z_$0-9]*)
-  symbol_quoted: ('[^']*')
+  symbol_ident: \b[A-Za-z_][A-Za-z_$0-9]*
+  symbol_reserved: \$[A-Za-z_$0-9]*
+  symbol_quoted: \'[^\']*\'
   non_value: '\]\}\),:/'
 
 contexts:
@@ -136,17 +136,17 @@ contexts:
       scope: constant.numeric.ion
 
   annotation:
-    - match: '{{symbol_ident}}\s*(::)\s*'
+    - match: '({{symbol_ident}})\s*(::)\s*'
       captures:
         1: storage.type.annotation.ion
         2: punctuation.definition.annotation.ion
       push: annotated-value
-    - match: '{{symbol_reserved}}\s*(::)\s*'
+    - match: '({{symbol_reserved}})\s*(::)\s*'
       captures:
         1: keyword.other.symbol-reserved.ion
         2: punctuation.definition.annotation.ion
       push: annotated-value
-    - match: '{{symbol_quoted}}\s*(::)\s*'
+    - match: '({{symbol_quoted}})\s*(::)\s*'
       captures:
         1: storage.type.annotation.ion
         2: punctuation.definition.annotation.ion
@@ -256,7 +256,7 @@ contexts:
           scope: constant.numeric.base64.ion
           set: close-blob
         - match: ''
-          scope: invalid.illegal.unexpected_state.ion
+          scope: invalid.illegal.blob.BROKEN_STATE.ion
           pop: true
     - match: (?=")
       set:
@@ -282,14 +282,14 @@ contexts:
       scope: punctuation.section.braces.end.ion
       pop: true
     - match: \S
-      scope: invalid.illegal.expected-close-braces.ion
+      scope: invalid.illegal.unclosed-blob.ion
 
   list:
     # an ION list (JSON array)
     - match: '\['
       scope: punctuation.section.sequence.begin.ion
       push:
-        - meta_scope: meta.sequence.ion
+        - meta_scope: meta.sequence.list.ion
         - match: '\]'
           scope: punctuation.section.sequence.end.ion
           pop: true
@@ -297,12 +297,12 @@ contexts:
           push:
             - match: '(,)|(?=\])'
               captures:
-                1: invalid.illegal.expected-sequence-element.ion
+                1: invalid.illegal.expected-list-element.ion
               pop: true
             - match: (?=\S)
               set:
                 - clear_scopes: 1
-                - meta_scope: meta.sequence.element.ion
+                - meta_scope: meta.sequence.list-element.ion
                 - include: value
                 - match: ''
                   set:
@@ -311,48 +311,66 @@ contexts:
                         1: punctuation.separator.sequence.ion
                       pop: true
                     - match: '\s(?=[^\s,])|[^\s,]'
-                      scope: invalid.illegal.expected-sequence-separator.ion
+                      scope: invalid.illegal.expected-list-separator.ion
                       pop: true
         - match: '[^\s\]]'
-          scope: invalid.illegal.expected-sequence-element.ion
+          scope: invalid.illegal.expected-list-element.ion
 
   struct:
     # an ION struct (JSON object)
     - match: '\{(?!\{)'
       scope: punctuation.section.mapping.begin.ion
-      push:
-        - meta_scope: meta.mapping.ion
-        - match: '\}'
-          scope: punctuation.section.mapping.end.ion
-          pop: true
-        - match: '{{symbol_ident}}(?=\s*:)'
-          scope: variable.other.constant.symbol-identifier.ion
-        - match: '{{symbol_reserved}}(?=\s*:)'
-          scope: keyword.other.symbol-reserved.ion
-        - match: '{{symbol_quoted}}(?=\s*:)'
-          scope: variable.other.constant.symbol-quoted.ion
-        - match: ("[^"]*")(?=\s*:)
-          scope: variable.other.constant.legacy-string.ion
-        - match: ":"
-          scope: punctuation.separator.mapping.key-value.ion
-          push:
-            - match: '(,)|(?=\})'
+      push: struct-field
+  struct-field:
+    - meta_scope: meta.mapping.structure.ion
+    - match: '\}'
+      scope: punctuation.section.mapping.end.ion
+      pop: true
+    - match: (?=[^,\}]*:)
+      set:
+        - meta_scope: meta.mapping.key.structure.ion
+        - match: '({{symbol_ident}})(\s*)(:)'
+          captures:
+            1: variable.other.constant.symbol-identifier.ion
+            3: punctuation.separator.mapping.key-value.ion
+          set: struct-value
+        - match: '({{symbol_reserved}})(\s*)(:)'
+          captures:
+            1: keyword.other.symbol-reserved.ion
+            3: punctuation.separator.mapping.key-value.ion
+          set: struct-value
+        - match: '({{symbol_quoted}})(\s*)(:)'
+          captures:
+            1: variable.other.constant.symbol-quoted.ion
+            3: punctuation.separator.mapping.key-value.ion
+          set: struct-value
+        - match: '("[^"]*")(\s*)(:)'
+          captures:
+            1: variable.other.constant.legacy-string.ion
+            3: punctuation.separator.mapping.key-value.ion
+          set: struct-value
+        - match: '(:)'
+          scope: invalid.illegal.expected-field-name.ion
+          set: struct-value
+    - match: '[^\s\}]'
+      scope: invalid.illegal.expected-field-name.ion
+  struct-value:
+    - match: \s*(?=[^\s,\}])
+      set:
+        - meta_scope: meta.mapping.value.structure.ion
+        - include: value
+        - match: ''
+          set:
+            - match: '(,)|(?=\s*\})'
               captures:
-                1: invalid.illegal.expected-mapping-value.ion
-              pop: true
-            - match: (?=\S)
-              set:
-                - clear_scopes: 1
-                - meta_scope: meta.mapping.value.ion
-                - include: value
-                - match: ''
-                  set:
-                    - match: '(,)|(?=\s*\})'
-                      captures:
-                        1: punctuation.separator.mapping.pair.ion
-                      pop: true
-                    - match: '\s(?=[^\s,])|[^\s,]'
-                      scope: invalid.illegal.expected-mapping-separator.ion
-                      pop: true
-        - match: '[^\s\}]'
-          scope: invalid.illegal.expected-mapping-key.ion
+                1: punctuation.separator.mapping.pair.ion
+              set: struct-field
+            - match: '\s(?=[^\s,])|[^\s,]'
+              scope: invalid.illegal.expected-field-separator.ion
+              set: struct-field
+    - match: (,)
+      scope: invalid.illegal.expected-field-value.ion
+      set: struct-field
+    - match: '\}'
+      scope: invalid.illegal.expected-field-value.ion
+      pop: true
