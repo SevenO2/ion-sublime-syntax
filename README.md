@@ -1,5 +1,5 @@
-# ION Syntax Highlighting
-Syntax highlighting for [ION serialization](http://en.wikipedia.org/wiki/Ion_(serialization_format)) files in [Sublime Text](http://www.sublimetext.com/).\
+# ION Syntax
+Syntax highlighting for [ION serialization](http://en.wikipedia.org/wiki/Ion_(serialization_format)) files in [Sublime Text 3](http://www.sublimetext.com/).\
 _( ION is a superset of JSON [delevoped by Amazon](https://amzn.github.io/ion-docs/index.html) )_
 
 ![Screenshot](https://raw.githubusercontent.com/SevenO2/misc/master/ion_syntax.PNG)
