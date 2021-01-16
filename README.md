@@ -1,6 +1,7 @@
-# ION Syntax
-Syntax highlighting for [ION serialization](http://en.wikipedia.org/wiki/Ion_(serialization_format)) files in [Sublime Text 3](http://www.sublimetext.com/).\
-_( ION is a superset of JSON [delevoped by Amazon](https://amzn.github.io/ion-docs/index.html) )_
+# Ion Syntax
+Syntax highlighting for [Ion serialization files](http://en.wikipedia.org/wiki/Ion_(serialization_format)) in [Sublime Text 3](http://www.sublimetext.com/).
+
+_ION's text format is a superset of JSON [developed by Amazon](https://amzn.github.io/ion-docs/index.html)_
 
 ![Screenshot](https://raw.githubusercontent.com/SevenO2/misc/master/ion_syntax.PNG)
 
@@ -13,7 +14,7 @@ Installation through [Package Control](https://packagecontrol.io/installation) i
  _**Win/Linux:**_ `ctrl+shift+p`\
  _**MacOS:**_ `cmd+shift+p`
 2. Enter `Package Control: Install Package`
-3. Search for `ION Syntax`
+3. Search for `Ion Syntax`
 
 ### Manual
 Copy `ION.sublime-syntax` into the packages directory. By default, the Package directory is located at:
