@@ -110,6 +110,11 @@ contexts:
       scope: constant.numeric.integer.binary.ion
     - match: -?0x[\da-fA-F](?:[\da-fA-F_]*[\da-fA-F])?(?=[\}\]\),"'\s])
       scope: constant.numeric.integer.hexadecimal.ion
+    # handles special floats
+    - match: \bnan\b
+      scope: constant.language.float.ion
+    - match: '[-+]inf\b'
+      scope: constant.language.float.ion
     # handles real numbers and normal integers
     - match: |-
         (?x:        # turn on extended mode

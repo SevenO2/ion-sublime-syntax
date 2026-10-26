@@ -1,7 +1,24 @@
 // Example ION file
 {
 	nan: nan,
-	+inf: -inf,
-	[oops: not[]good,
-	bad: 44__939,
+	true: true,
+	true: tootrue,
+	banana: banana,
+	+inf: -inf,           // ERROR: bad key
+	inf: inf,
+	inf: +infinity,       // ERROR: symbols don't start with symbols
+	exp: (var+inf),       // UNSURE
+	exp: (b*nan-nan),
+	$exp: (+inf * -inf),
+	exp: ($var+infinity),
+	ops: (! # % & * + - . / ; < = > ? @ ^ ` | ~),
+	arith: (1+2),
+	arith: (w/1+2),
+	arith: (-1+2),
+	sub: (x*-2),
+	sub: (x-2),           // UNSURE
+	[oops: notgood,	      // ERROR: bad key
+	oo[ps: nood,          // ERROR: bad key
+	oops: not[]good,      // ERROR: list in symbol
+	bad: 44__939,         // ERROR: double underscore
 }
