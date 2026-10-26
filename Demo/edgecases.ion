@@ -9,12 +9,18 @@
 	inf: +infinity,       // ERROR: symbols don't start with symbols
 	exp: (var+inf),       // UNSURE
 	exp: (b*nan-nan),
-	$exp: (+inf * -inf),
+	exp: (+inf * -inf),
+	exp: (false&|true),
+	res$erved: false,
+	$reserved: $res,
 	exp: ($var+infinity),
 	ops: (! # % & * + - . / ; < = > ? @ ^ ` | ~),
+	litexp: (0),
+	litexp: (1),
 	arith: (1+2),
 	arith: (w/1+2),
 	arith: (-1+2),
+	arith: (),
 	sub: (x*-2),
 	sub: (x-2),           // UNSURE
 	[oops: notgood,	      // ERROR: bad key
