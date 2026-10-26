@@ -23,6 +23,11 @@
 	null.list,
 	null.sexp,
 
+	null,        // The type is null
+	'null',      // The type is symbol
+	null.list,   // The type is list
+	'null.int',  // The type is symbol
+
 /*
  * Booleans
  */
@@ -237,6 +242,9 @@
 	(a+-b),  ( 'a' '+-' 'b' ),    // Equivalent; three symbols
 	(a.b;),  ( 'a' '.' 'b' ';'),  // Equivalent; four symbols
 
+	(a/* word */b),       // An S-expression with two symbols and a comment
+	(a '/*' word '*/' b), // An S-expression with five symbols
+
 /*
  * Type Annotations
  */
@@ -244,6 +252,8 @@
 	'my.custom.type' :: { x : 12 , y : -1 },  // Gives a struct a user-defined type
 
 	{ field: something::'another thing'::value },  // Field's name must precede annotations of its value
+	{ annotation:: field_name: value },            // ERROR
+	{ field_name: annotation:: value },            // Okay
 
 	jpeg :: {{ /// }},                        // Indicates the blob contains jpeg data
 	bool :: null.int,                         // A very misleading annotation on the integer null
