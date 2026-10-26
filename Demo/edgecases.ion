@@ -1,0 +1,7 @@
+// Example ION file
+{
+	nan: nan,
+	+inf: -inf,
+	[oops: not[]good,
+	bad: 44__939,
+}
